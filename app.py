@@ -5,9 +5,6 @@ import pandas as pd
 import numpy as np
 import pandas_datareader as web
 
-import matplotlib.pyplot as plt
-
-import matplotlib.pyplot as plt
 
 import datetime as dt
 
@@ -18,32 +15,6 @@ import math
 
 app = Flask(__name__)
 
-def printGraph(stock_name, pred):
-  df = yf.download(stock_name, date.today() - timedelta(15))
-  df.drop(['High','Low','Open','Volume','Adj Close'],axis=1,inplace=True)
-  df['Date'] = df.index
-  dff = df.tail(1)
-  check = str(dff.tail(1).index)[16:26] == str(date.today())
-  if check:
-    date_dff = pd.date_range(start=dt.date.today() + timedelta(1), periods = 3, freq='D')
-  else:
-    date_dff = pd.date_range(start=dt.date.today(), periods = 3, freq='D')
-  new_dff = pd.DataFrame(data=date_dff,columns=['Date'])
-  new_dff.index = new_dff.Date
-  new_dff['Close'] = pred
-  dff = dff.append(new_dff.tail(3))
-  #print(dff)
-  dff.drop(columns=['Date'],axis=1,inplace=True)
-  plt.figure(figsize=(20,8))
-  plt.grid()
-  plt.title('CLOSE PRICE')
-  #plt.plot(train_data["Close"],color='blue',label='Close')
-  plt.plot(df['Close'],label='Actual Close',color='blue',marker = '*')
- # plt.plot(dff['Close'],'g--',label='Predicted Close',marker = '+')
-  plt.plot(dff['Close'],'green',label='future Predicion',marker = 'o')
-  plt.legend()
-  plt.savefig(fname='image.jpg',bbox_inches='tight')
-  #print(df)
 
 def predict(stock_name, isIssue = False):
   df = yf.download(stock_name, '2022-01-01')
@@ -76,7 +47,6 @@ def predict(stock_name, isIssue = False):
     if math.isnan(predicted_price):
       predict(stock_name, True)
       return
-  printGraph(stock_name, future_prediction)
   return future_prediction
 
 @app.route('/showChart')
